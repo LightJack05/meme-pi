@@ -22,6 +22,7 @@
           pkgs.bison
           pkgs.openssl.dev
           pkgs.ncurses
+          pkgs.bear
           
           # The Cross Compiler (runs on x86, builds for ARM64)
           crossPkgs.buildPackages.gcc
