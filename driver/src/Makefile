@@ -3,6 +3,9 @@ obj-m += ws_epaper.o
 all:
 	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(PWD) modules
 
+clean:
+	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(PWD) clean
+
 deploy:
 	ssh meme-pi mkdir -p /meme-pi/driver/
 	bash -c 'ssh meme-pi rmmod ws_epaper || true '
