@@ -1,0 +1,12 @@
+CompileFlags:
+  BuiltinHeaders: QueryDriver
+  Add:
+    - "-Wno-unknown-warning-option"
+  Remove:
+    - "-mpreferred-stack-boundary=*"
+    - "-mindirect-branch=*"
+    - "-mrecord-mcount"
+    - "-fconserve-stack"
+    - "-fno-allow-store-data-races"
+    - "-fmin-function-alignment=4"
+    - "-fzero-init-padding-bits=all"
