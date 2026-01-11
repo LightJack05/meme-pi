@@ -1,0 +1,27 @@
+driver/kernel-headers.d
+
+# Object files and Kernel Objects
+*.o
+*.ko
+*.obj
+
+# Kernel Module specific build files
+*.mod
+*.mod.c
+*.mod.o
+*.ko.cmd
+
+# Build dependency and command tracking (Hidden files)
+.*.cmd
+.*.d
+
+# Linker and Symbol files
+modules.order
+Module.symvers
+Module.markers
+
+# Temporary build directories
+.tmp_versions/
+
+# Install location (if installing locally for testing)
+/lib/
