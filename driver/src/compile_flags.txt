@@ -1,0 +1,18 @@
+# 1. Set the target architecture (e.g., aarch64-linux-gnu, x86_64-linux-gnu)
+--target=aarch64-linux-gnu
+
+# 2. Essential Kernel Defines
+-D__KERNEL__
+-DMODULE
+
+# 3. Include Paths (Relative to this file)
+# Assuming your headers dir is named 'kernel-headers.d/linux-6.12' in the parent directory
+-I../kernel-headers.d/linux-6.12/include
+-I../kernel-headers.d/linux-6.12/include/uapi
+-I../kernel-headers.d/linux-6.12/arch/arm64/include
+-I../kernel-headers.d/linux-6.12/arch/arm64/include/generated
+-I../kernel-headers.d/linux-6.12/arch/arm64/include/uapi
+
+# 4. Optional: Explicitly include the configuration header if builds fail to index
+#-include
+#../kernel-headers.d/linux-6.12/include/generated/autoconf.h
