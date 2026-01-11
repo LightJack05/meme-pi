@@ -1,8 +1,12 @@
-default:
-	echo "Not configured"
+all: module
 
 module:
 	$(MAKE) -C ./driver/
 
-deploy:
+deploy: deploy_config deploy_driver
+
+deploy_config:
 	$(MAKE) -C ./config/ deploy
+
+deploy_driver:
+	$(MAKE) -C ./driver/ deploy
