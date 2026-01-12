@@ -1,1 +1,3 @@
 dtparam=spi=off
+[all]
+enable_uart=1

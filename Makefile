@@ -10,3 +10,9 @@ deploy_config:
 
 deploy_driver:
 	$(MAKE) -C ./driver/ deploy
+
+reboot:
+	ssh meme-pi reboot
+
+shell:
+	sudo tio /dev/ttyUSB0
