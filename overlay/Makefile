@@ -1,2 +1,6 @@
 all:
-	dtc -@ -I dts -O dtb -o ws_epaper.dtso ws_epaper.dts
+	dtc -@ -I dts -O dtb -o ws_epaper.dtbo ws_epaper.dts
+
+deploy:
+	ssh meme-pi mkdir -p /meme-pi/overlay
+	scp ./ws_epaper.dtbo meme-pi:/meme-pi/overlay/ws_epaper.dtbo
