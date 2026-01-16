@@ -1,0 +1,32 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2837";
+
+    fragment@0 {
+        target = <&spi0>;
+        __overlay__ {
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            spidev@0{
+                status = "disabled";
+                reg = <0>;
+            };
+
+            ws_epaper_display: epaper@0 {
+                #address-cells = <1>;
+                #size-cells = <0>;
+                compatible = "ws-epaper-display";
+                reg = <0>;
+                spi-max-frequency = <4000000>;
+
+                dc-gpios = <&gpio 25 0>;
+                rst-gpios = <&gpio 17 1>;
+                bsy-gpios = <&gpio 24 1>;
+            };
+        };
+    };
+};
