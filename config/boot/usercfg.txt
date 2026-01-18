@@ -1,3 +1,4 @@
 dtparam=spi=off
+dtoverlay=ws_epaper
 [all]
 enable_uart=1
