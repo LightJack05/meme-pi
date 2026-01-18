@@ -25,3 +25,4 @@ Module.markers
 
 # Install location (if installing locally for testing)
 /lib/
+overlay/ws_epaper.dtbo
