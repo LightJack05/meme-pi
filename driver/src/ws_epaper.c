@@ -1,3 +1,4 @@
+#include "linux/dev_printk.h"
 #include "linux/mod_devicetable.h"
 #include "linux/printk.h"
 #include <linux/gpio/consumer.h>
@@ -7,13 +8,47 @@
 #include <linux/spi/spi.h>
 
 static struct spi_device *ws_spi_device;
+static struct gpio_desc *data, *reset, *busy;
+
+static void request_gpiod_pins(struct spi_device *spi){
+    data = gpiod_get(&spi->dev, "dc", GPIOD_OUT_HIGH);
+    reset = gpiod_get(&spi->dev, "rst", GPIOD_OUT_HIGH);
+    busy = gpiod_get(&spi->dev, "bsy", GPIOD_IN);
+    if (IS_ERR(data) || IS_ERR(reset) || IS_ERR(busy)) {
+        panic("ws_epaper: Failed to request GPIO pins\n");
+    }
+}
+
+static void initialize_gpio_pins(void){
+    gpiod_set_value(reset, 0);
+    gpiod_set_value(data, 1);
+}
 
 static int ws_epaper_probe(struct spi_device *spi) {
-    pr_info("ws_epaper: Bound to device\n");
+    dev_info(&spi->dev, "Probing device with CS: %u @ %u Hz",
+             spi->chip_select[0], spi->max_speed_hz);
+    dev_info(&spi->dev, "Device %s bound to driver.", spi->modalias);
+
+    request_gpiod_pins(spi);
+
+    spi->max_speed_hz = 1;
+    int rc = spi_setup(spi);
+    if (rc < 0) {
+        dev_err(&spi->dev, "Failed to setup SPI device: %d\n", rc);
+        return rc;
+    }
+
+    initialize_gpio_pins();
+
+    ws_spi_device = spi;
     return 0;
 }
 
 static void ws_epaper_remove(struct spi_device *spi) {
+    gpiod_put(data);
+    gpiod_put(reset);
+    gpiod_put(busy);
+    ws_spi_device = NULL;
     pr_info("ws_epaper: Unbound from device\n");
 }
 
