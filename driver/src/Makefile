@@ -1,5 +1,3 @@
-obj-m += ws_epaper.o
-
 all:
 	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(PWD) modules
 
