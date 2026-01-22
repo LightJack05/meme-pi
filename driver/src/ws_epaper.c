@@ -20,7 +20,7 @@ static void ws_epaper_remove(struct spi_device *spi) {
 static const struct of_device_id compatible_devices[] = {
     {.compatible = "waveshare,epaper-display"}, {}};
 
-static const struct spi_device_id legacy_ids[] = {{"ws-epaper-display", 0}, {}};
+static const struct spi_device_id legacy_ids[] = {{"epaper-display", 0}, {}};
 
 MODULE_DEVICE_TABLE(of, compatible_devices);
 MODULE_DEVICE_TABLE(spi, legacy_ids);
