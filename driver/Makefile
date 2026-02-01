@@ -1,4 +1,12 @@
+.PHONY: all clean distclean clean-src driver deploy headers_prepare clean-headers
 all: kernel-headers.d driver
+
+clean: clean-src 
+
+distclean: clean-src clean-headers
+
+clean-src:
+	$(MAKE) -C ./src clean
 
 driver:
 	$(MAKE) -C ./src 
@@ -11,6 +19,5 @@ kernel-headers.d: prepare_headers.sh
 
 headers_prepare: kernel-headers.d
 
-
-headers-clean:
+clean-headers:
 	rm -rf kernel-headers.d/

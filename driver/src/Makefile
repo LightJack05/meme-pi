@@ -1,8 +1,10 @@
-all:
-	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(PWD) modules
+.PHONY: clean deploy
+
+all: ws_epaper.c
+	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(CURDIR) modules
 
 clean:
-	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(PWD) clean
+	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(CURDIR) clean
 
 deploy:
 	ssh meme-pi mkdir -p /meme-pi/driver/

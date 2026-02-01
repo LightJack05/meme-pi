@@ -1,4 +1,11 @@
+.PHONY: all clean clean_module module deploy deploy_config deploy_driver deploy_overlay overlay reboot shell
+
 all: overlay module
+
+clean: clean_module
+
+clean_module:
+	$(MAKE) -C ./driver/ clean
 
 module:
 	$(MAKE) -C ./driver/
