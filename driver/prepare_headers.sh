@@ -3,7 +3,7 @@ set -e
 
 # --- Configuration (Match these to your target Alpine version) ---
 KERN_VER="6.12"
-PATCH_VER="62"
+PATCH_VER="67"
 PKG_REL="0"
 ALPINE_FLAVOR="rpi"
 ALPINE_MIRROR="https://dl-cdn.alpinelinux.org/alpine/latest-stable/main/aarch64"

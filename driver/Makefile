@@ -13,4 +13,4 @@ headers_prepare: kernel-headers.d
 
 
 headers-clean:
-	rm -rf headers
+	rm -rf kernel-headers.d/
