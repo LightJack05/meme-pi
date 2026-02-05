@@ -13,4 +13,8 @@ void unregister_device_file(void);
 
 void delete_device_file(void);
 
+void unregister_device(void);
+
+void unregister_class(void);
+
 #endif // WS_EPAPER_CLEANUP_H

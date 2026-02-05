@@ -1,5 +1,8 @@
 #include "wsepaper_dev.h"
+#include "linux/fs.h"
 #include "linux/slab.h"
+#include "linux/spi/spi.h"
+#include "linux/types.h"
 #include "wsepaper_data.h"
 #include <linux/cdev.h>
 #include <linux/kern_levels.h>
@@ -10,15 +13,16 @@ extern struct epaper_data *epaper_device;
 // TODO: Add file operations
 const struct file_operations epaper_fops = {.owner = THIS_MODULE};
 
-static int register_device_file(void) {
+static int register_device_file(dev_t *dev) {
     // This driver should only ever be able to have a single probe call. There
     // should be no possibility of multiple devices matching this drivers ID
     // table.
-    int err = register_chrdev_region(MKDEV(0, 0), 0, "ws_epaper");
+    int err = alloc_chrdev_region(dev, 0, 1, "ws_epaper");
     if (err != 0) {
-        printk(KERN_ERR "ws_epaper: Failed to allocate char device 0,0");
+        printk(KERN_ERR "wsepaper: Failed to allocate char device");
         return err;
     }
+    printk(KERN_DEBUG "wsepaper: Allocated char device with major %x\n", *dev);
     return 0;
 }
 
@@ -39,10 +43,10 @@ static int init_device_file(struct spi_device *spi) {
     return 0;
 }
 
-static int add_device_file(struct spi_device *spi) {
-    printk(KERN_DEBUG "wsepaper: Adding device file at %p\n",
-           epaper_device->cdev);
-    int err = cdev_add(epaper_device->cdev, MKDEV(0, 0), 1);
+static int add_device_file(struct spi_device *spi, dev_t dev) {
+    printk(KERN_DEBUG "wsepaper: Adding device file at %p\n with dev %x\n",
+           epaper_device->cdev, dev);
+    int err = cdev_add(epaper_device->cdev, dev, 1);
     if (err != 0) {
         dev_err(&spi->dev, "Failed to add cdev to system: %d\n", err);
         return err;
@@ -52,7 +56,8 @@ static int add_device_file(struct spi_device *spi) {
 
 int setup_device_file(struct spi_device *spi) {
     printk(KERN_DEBUG "wsepaper: Initializing device at %p\n", epaper_device);
-    int err = register_device_file();
+    dev_t dev = 0;
+    int err = register_device_file(&dev);
     if (err != 0) {
         dev_err(&spi->dev, "Failed to register device file: %d\n", err);
         return err;
@@ -62,10 +67,11 @@ int setup_device_file(struct spi_device *spi) {
         dev_err(&spi->dev, "Failed to initialize device file: %d\n", err);
         return err;
     }
-    err = add_device_file(spi);
+    err = add_device_file(spi, dev);
     if (err != 0) {
         dev_err(&spi->dev, "Failed to add device file: %d\n", err);
         return err;
     }
+    epaper_device->dev = dev;
     return 0;
 }

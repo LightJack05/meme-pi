@@ -1,4 +1,5 @@
 #include "wsepaper_cleanup.h"
+#include "linux/kern_levels.h"
 #include "wsepaper_data.h"
 #include <linux/cdev.h>
 #include <linux/gpio/consumer.h>
@@ -24,6 +25,8 @@ void delete_device_file(void) {
 
 void wsepaper_cleanup(void) {
     free_gpiod_pins();
+    unregister_device();
+    unregister_class();
     delete_device_file();
     unregister_device_file();
     free_epaper_device();
@@ -40,4 +43,25 @@ void free_epaper_device(void) {
 void unbind_device(void) {
     wsepaper_cleanup();
     pr_info("ws_epaper: Unbound from device\n");
+}
+
+void unregister_device(void) {
+    if (epaper_device->device != NULL) {
+        printk(KERN_DEBUG "Unregistering wsepaper device at %p\n",
+               epaper_device);
+        printk(KERN_DEBUG "Class: %p, Device: %p\n", epaper_device->class,
+               epaper_device->device);
+        printk(KERN_DEBUG "Unregistering device\n");
+        printk(KERN_DEBUG "Device major: %d\n", MAJOR(epaper_device->dev));
+        printk(KERN_DEBUG "Device minor: %d\n", MINOR(epaper_device->dev));
+        device_destroy(epaper_device->class, epaper_device->dev);
+        epaper_device->device = NULL;
+    }
+}
+
+void unregister_class(void) {
+    if (epaper_device->class != NULL) {
+        class_destroy(epaper_device->class);
+        epaper_device->class = NULL;
+    }
 }

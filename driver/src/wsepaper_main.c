@@ -4,9 +4,10 @@
 #include "linux/mod_devicetable.h"
 #include "linux/slab.h"
 #include "linux/stddef.h"
+#include "wsepaper_class.h"
 #include "wsepaper_cleanup.h"
-#include "wsepaper_dev.h"
 #include "wsepaper_data.h"
+#include "wsepaper_dev.h"
 #include <asm-generic/errno-base.h>
 #include <linux/fs.h>
 #include <linux/gpio/consumer.h>
@@ -86,13 +87,20 @@ static int ws_epaper_probe(struct spi_device *spi) {
     initialize_gpio_pins();
 
     // Register the device in the module
-    epaper_device->device = spi;
+    epaper_device->spi_dev = spi;
 
     printk(KERN_DEBUG "ws_epaper: epaper_device is at %p\n", epaper_device);
     // Set up the device file
     err = setup_device_file(spi);
     if (err != 0) {
         dev_err(&spi->dev, "Failed to setup device file: %ld\n", err);
+        wsepaper_cleanup();
+        return err;
+    }
+
+    err = setup_device(spi, epaper_device->dev);
+    if (err != 0) {
+        dev_err(&spi->dev, "Failed to setup device: %ld\n", err);
         wsepaper_cleanup();
         return err;
     }

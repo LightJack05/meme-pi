@@ -1,3 +1,3 @@
 obj-m += wsepaper.o
-wsepaper-y += wsepaper_main.o wsepaper_cleanup.o wsepaper_dev.o
+wsepaper-y += wsepaper_main.o wsepaper_cleanup.o wsepaper_dev.o wsepaper_class.o
 
