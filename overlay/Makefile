@@ -1,5 +1,9 @@
+.PHONY: all clean deploy
 all:
 	dtc -@ -I dts -O dtb -o ws_epaper.dtbo ws_epaper.dts
+
+clean:
+	rm -f ws_epaper.dtbo
 
 deploy:
 	ssh meme-pi mkdir -p /meme-pi/overlay

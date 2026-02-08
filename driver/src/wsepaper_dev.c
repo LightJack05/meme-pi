@@ -4,6 +4,7 @@
 #include "linux/spi/spi.h"
 #include "linux/types.h"
 #include "wsepaper_data.h"
+#include "wsepaper_ioctl.h"
 #include <linux/cdev.h>
 #include <linux/kern_levels.h>
 #include <linux/printk.h>
@@ -11,7 +12,10 @@
 extern struct epaper_data *epaper_device;
 
 // TODO: Add file operations
-const struct file_operations epaper_fops = {.owner = THIS_MODULE};
+const struct file_operations epaper_fops = {
+    .owner = THIS_MODULE,
+    .unlocked_ioctl = ws_epaper_ioctl,
+};
 
 static int register_device_file(dev_t *dev) {
     // This driver should only ever be able to have a single probe call. There

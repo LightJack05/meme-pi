@@ -1,6 +1,6 @@
 .PHONY: clean deploy
 
-all: wsepaper_main.c wsepaper_cleanup.c
+all: wsepaper_main.c wsepaper_cleanup.c wsepaper_dev.c wsepaper_class.c wsepaper_ioctl.c
 	$(MAKE) -C ../kernel-headers.d/linux-6.12/ M=$(CURDIR) modules
 
 debug: wsepaper_main.c wsepaper_cleanup.c
