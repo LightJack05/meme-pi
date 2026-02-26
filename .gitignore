@@ -6,10 +6,10 @@ driver/kernel-headers.d
 *.obj
 
 # Kernel Module specific build files
-*.mod
-*.mod.c
-*.mod.o
-*.ko.cmd
+driver/src/*.mod
+driver/src/*.mod.c
+driver/src/*.mod.o
+driver/src/*.ko.cmd
 
 # Build dependency and command tracking (Hidden files)
 .*.cmd
@@ -26,3 +26,5 @@ Module.markers
 # Install location (if installing locally for testing)
 /lib/
 overlay/ws_epaper.dtbo
+
+user/bin/

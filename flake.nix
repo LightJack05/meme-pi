@@ -23,6 +23,7 @@
           pkgs.openssl.dev
           pkgs.ncurses
           pkgs.bear
+          pkgs.go
           
           # The Cross Compiler (runs on x86, builds for ARM64)
           crossPkgs.buildPackages.gcc
@@ -33,10 +34,15 @@
         ARCH = "arm64";
         CROSS_COMPILE = "aarch64-unknown-linux-gnu-";
 
+        # Go Env
+        GOARCH = "arm64";
+        GOOS = "linux";
+
         shellHook = ''
           echo "🌲 Alpine RPi Cross-Compile Environment Loaded"
           echo "Target: AArch64 (Raspberry Pi)"
-          echo "Compiler: $(which aarch64-unknown-linux-gnu-gcc)"
+          echo "C Compiler: $(which aarch64-unknown-linux-gnu-gcc)"
+          echo "Go Compiler: $(which go)"
         '';
       };
     };
