@@ -15,7 +15,7 @@ func Test() error {
 
 	_, _, errno := unix.Syscall(unix.SYS_IOCTL, devFile.Fd(), 0x2101, 0)
 	if errno != 0 {
-		return fmt.Errorf("ioctl failed: %v", err)
+		return fmt.Errorf("ioctl failed: %v", errno.Error())
 	}
 
 	err = devFile.Close()

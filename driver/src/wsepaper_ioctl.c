@@ -9,7 +9,7 @@ long ws_epaper_ioctl(struct file *file, unsigned int cmd,
         printk(KERN_INFO "ws_epaper: IOCTL received!\n");
         break;
     default:
-        printk(KERN_ERR "ws_epaper: Unknown IOCTL command: %u\n", cmd);
+        printk(KERN_ERR "ws_epaper: Unknown IOCTL command: 0x%x\n", cmd);
         return -EINVAL;
     }
     return 0;
