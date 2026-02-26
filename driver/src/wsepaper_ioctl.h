@@ -7,7 +7,9 @@
 
 extern struct epaper_data *epaper_device;
 
-#define EP_TEST _IO(0x21, 1)
+#define EP_TEST _IO(0x21, 0xFF)
+
+#define EP_REFRESH _IO(0x21, 0x01)
 
 long ws_epaper_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 
