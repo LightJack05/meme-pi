@@ -1,10 +1,12 @@
 #include "wsepaper_cleanup.h"
 #include "linux/kern_levels.h"
 #include "wsepaper_data.h"
+#include "wsepaper_mmap.h"
 #include <linux/cdev.h>
 #include <linux/gpio/consumer.h>
 #include <linux/printk.h>
 #include <linux/spi/spi.h>
+#include <linux/dma-mapping.h>
 
 extern struct epaper_data *epaper_device;
 
@@ -29,6 +31,7 @@ void wsepaper_cleanup(void) {
     unregister_class();
     delete_device_file();
     unregister_device_file();
+    free_frame_buffer();
     free_epaper_device();
 }
 
@@ -38,6 +41,15 @@ void free_epaper_device(void) {
     }
     kfree(epaper_device);
     epaper_device = NULL;
+}
+
+void free_frame_buffer(void) {
+    if (epaper_device->framebuffer == NULL) {
+        return;
+    }
+    long buffer_size = (FRAMEBUFFER_NUM_PAGES) * (PAGE_SIZE);
+    dma_free_coherent(&epaper_device->spi_dev->dev,buffer_size ,epaper_device->framebuffer, *epaper_device->dma_handle);
+    epaper_device->framebuffer = NULL;
 }
 
 void unbind_device(void) {

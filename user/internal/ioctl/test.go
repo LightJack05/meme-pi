@@ -13,7 +13,7 @@ func Test() error {
 		return fmt.Errorf("Could not open /dev/ws_epaper0 for RW: %v", err)
 	}
 
-	_, _, errno := unix.Syscall(unix.SYS_IOCTL, devFile.Fd(), 0x2101, 0)
+	_, _, errno := unix.Syscall(unix.SYS_IOCTL, devFile.Fd(), 0x21FF, 0)
 	if errno != 0 {
 		return fmt.Errorf("ioctl failed: %v", errno.Error())
 	}

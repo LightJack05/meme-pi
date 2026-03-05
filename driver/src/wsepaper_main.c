@@ -1,14 +1,18 @@
+#include "asm/page-def.h"
 #include "linux/dev_printk.h"
 #include "linux/err.h"
 #include "linux/gfp_types.h"
 #include "linux/mod_devicetable.h"
 #include "linux/slab.h"
 #include "linux/stddef.h"
+#include "linux/types.h"
 #include "wsepaper_class.h"
 #include "wsepaper_cleanup.h"
 #include "wsepaper_data.h"
 #include "wsepaper_dev.h"
+#include "wsepaper_mmap.h"
 #include <asm-generic/errno-base.h>
+#include <linux/dma-mapping.h>
 #include <linux/fs.h>
 #include <linux/gpio/consumer.h>
 #include <linux/init.h>
@@ -42,6 +46,38 @@ static unsigned long request_gpiod_pins(struct spi_device *spi) {
 static void initialize_gpio_pins(void) {
     gpiod_set_value(epaper_device->reset, 0);
     gpiod_set_value(epaper_device->data, 1);
+}
+
+static unsigned long allocate_framebuffer(void) {
+    dma_addr_t *dma_handle = NULL;
+    if (epaper_device->framebuffer != NULL) {
+        dev_err(&epaper_device->spi_dev->dev,
+                "Expected framebuffer to be NULL, got %p\n",
+                epaper_device->framebuffer);
+        return -EBUSY;
+    }
+
+    dev_info(&epaper_device->spi_dev->dev,
+             "Current page size: %ld\nFRAMEBUFFER_NUM_PAGES: "
+             "%ld\nFRAMEBUFFER_NUM_BYTES: %ld",
+             PAGE_SIZE, FRAMEBUFFER_NUM_PAGES, FRAMEBUFFER_NUM_BYTES);
+
+    long buffer_size = (FRAMEBUFFER_NUM_PAGES) * (PAGE_SIZE);
+    dev_info(&epaper_device->spi_dev->dev,
+             "Allocating new framebuffer with size %ld\n", buffer_size);
+
+    unsigned char *new_buffer = dma_alloc_coherent(
+        &epaper_device->spi_dev->dev, buffer_size, dma_handle, GFP_KERNEL);
+    if (new_buffer == NULL) {
+        dev_err(&epaper_device->spi_dev->dev,
+                "Failed to allocate buffer, pointer: %p\n", new_buffer);
+        return -ENOMEM;
+    }
+
+    epaper_device->framebuffer = new_buffer;
+    epaper_device->dma_handle = dma_handle;
+
+    return 0;
 }
 
 static int ws_epaper_probe(struct spi_device *spi) {
@@ -83,11 +119,19 @@ static int ws_epaper_probe(struct spi_device *spi) {
         return err;
     }
 
+    // Register the device in the module
+    epaper_device->spi_dev = spi;
+
     // Initialize the GPIO pins
     initialize_gpio_pins();
 
-    // Register the device in the module
-    epaper_device->spi_dev = spi;
+    // Allocate the framebuffer for the display
+    err = allocate_framebuffer();
+    if (err != 0) {
+        dev_err(&spi->dev, "Framebuffer allocation failed: %ld\n", err);
+        wsepaper_cleanup();
+        return err;
+    }
 
     printk(KERN_DEBUG "ws_epaper: epaper_device is at %p\n", epaper_device);
     // Set up the device file

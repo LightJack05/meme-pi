@@ -17,4 +17,6 @@ void unregister_device(void);
 
 void unregister_class(void);
 
+void free_frame_buffer(void);
+
 #endif // WS_EPAPER_CLEANUP_H
