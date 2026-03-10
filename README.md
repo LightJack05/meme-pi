@@ -17,8 +17,8 @@ Current progress:
 - ✅ Bind the driver to the SPI device and set up the device for use
 - ✅ Register a character device file
 - ✅ Register a device class and device to the kernel and make it appear in /dev/
-- 🔜 IN PROGRESS: Provide an IOCTL interface on the chrdev
-- 🔜 Provide the mmap interface for mapping the kernel framebuffer to userspace
+- ✅ Provide an IOCTL interface on the chrdev
+- 🔜 IN PROGRESS: Provide the mmap interface for mapping the kernel framebuffer to userspace
 - 🔜 Send the buffer to the display so it appears on screen (+ reset/standby/etc. logic)
 - 🔜 Add locking to ensure userspace does not send commands when the display is still busy (i.e. BSY is high)
 - 🔜 Hook into the panic notifier chain so I don't brick the display if the module panics
