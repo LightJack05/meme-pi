@@ -24,6 +24,7 @@
           pkgs.ncurses
           pkgs.bear
           pkgs.go
+          pkgs.bc
           
           # The Cross Compiler (runs on x86, builds for ARM64)
           crossPkgs.buildPackages.gcc
